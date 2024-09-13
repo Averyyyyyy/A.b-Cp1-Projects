@@ -1,7 +1,7 @@
-staff=29
+staff=30
 students=100
 students = students -1
-guests=students*2
+guests=students*2 -15
 seats =12
 
-print((staff+students=guests)/seats)
+print((staff+students==guests)/seats)
