@@ -1,25 +1,21 @@
 #Palindrome checker
 
-
 #author: avery
 
-
 #function to check if a word is a palindrome
-def is_palindrome(word):
+def check_palindrome(word):
    #convert the input to lowercase and remove spaces
-   cleaned_word = word.lower().replace(" ", " ").replace("!", "")
+   cleaned_word = ''.join(char.lower() for char in word if char.isalnum())
 
+#compare the word to its reverse
+if cleaned_word == cleaned_word[::-1]:
+    print(f'"{word}" is a palindrome. ')
+else:
+    print(f'"{word}" isn\'t a palindrome.')
 
-   #check if the cleaned word is the same forwards and backwards
-   return cleaned_word == cleaned_word[::-1]
-
-
-#lists of test words and phrases
+#tests words
 test_words = ["mom", "a", "dad", "bed", "racecar", "word", "step on no pets", "crab", "borrow or rob", "Yes!", "radar", "tom"]
 
-#loop through each test word and check if it's a palindrome
+#run tests
 for word in test_words:
-   if is_palindrome(word):
-       print(f'"{word}" is a palindrome.')
-   else:
-       print(f'"{word}" is not a palindrome.')
+   check_palindrome(word)
