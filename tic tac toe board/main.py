@@ -1,4 +1,4 @@
-#avery tic tac toe game
+#Avery tic tac toe board
 
 import random
 
@@ -6,10 +6,12 @@ import random
 board = [[" " for _ in range(3)] for _ in range(3)]
 
 def print_board():
-    """Print the current state of the board."""
+    """Print the current state of the board using a nested loop."""
     print("Current Board:")
     for row in board:
-        print("|".join(row))
+        for cell in row:
+            print(cell, end="|")
+        print()  # Move to the next line after a row
         print("-" * 5)
 
 def check_winner():
