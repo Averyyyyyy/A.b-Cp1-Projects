@@ -1,4 +1,4 @@
-#Avery Mystery Arena: path to victory 
+ #Avery Mystery Arena: path to victory
 
 # Global Variables
 player_stats = {
@@ -26,7 +26,8 @@ enemies = {
 }
 chests = {
     "pond": "Bomb",
-    "neighborhood": "Health Potion"
+    "neighborhood": "Health Potion",
+    "bunker": "Special Weapon"  # Added for win condition
 }
 game_active = True  # Game state flag
 
@@ -38,15 +39,46 @@ def display_stats():
         print(f"{stat.capitalize()}: {value}")
     print(f"Inventory: {', '.join(inventory) if inventory else 'Empty'}\n")
 
+def access_inventory():
+    """Allows the player to view and use items in the inventory."""
+    if not inventory:
+        print("Your inventory is empty.\n")
+        return
+    print("Your inventory contains:", ", ".join(inventory))
+    choice = input("Do you want to use an item? (yes/no): ").strip().lower()
+    if choice == "yes":
+        item = input("Which item would you like to use? ").strip()
+        if item in inventory:
+            use_item(item)
+        else:
+            print("That item is not in your inventory.\n")
+    else:
+        print("You close your inventory.\n")
+
+def use_item(item):
+    """Use an item from the inventory."""
+    if item == "Health Potion":
+        player_stats["health"] = min(player_stats["health"] + 50, 100)
+        print("You used a Health Potion. Health restored to:", player_stats["health"])
+        inventory.remove(item)
+    elif item == "Bomb":
+        print("The Bomb is ready to be used in combat!")
+    elif item == "Special Weapon":
+        print("The Special Weapon is already equipped and powerful!")
+    else:
+        print("You can't use that item now.\n")
+
 def move_to_location(current_location):
     """Allow player to move to a new location."""
-    print(f"You are at {current_location}. Possible paths: {locations[current_location]}")
-    next_location = input("Where would you like to go? ").strip()
-    if next_location in locations[current_location]:
-        return next_location
-    else:
-        print("Invalid location! Try again.")
-        return current_location
+    while True:
+        print(f"You are at {current_location}. Possible paths: {locations[current_location]}")
+        next_location = input("Where would you like to go? (or type 'inventory' to access your items): ").strip()
+        if next_location.lower() == "inventory":
+            access_inventory()
+        elif next_location in locations[current_location]:
+            return next_location
+        else:
+            print("Invalid location! Try again.\n")
 
 def explore_location(location):
     """Explore the current location."""
@@ -72,7 +104,7 @@ def combat(location):
     enemy = enemies[location]
     print(f"Enemy Stats - Health: {enemy['health']}, Strength: {enemy['strength']}")
     while player_stats["health"] > 0 and enemy["health"] > 0:
-        action = input("Do you want to attack or run? ").lower()
+        action = input("Do you want to attack, use inventory, or run? ").lower()
         if action == "attack":
             # Player attacks
             damage = player_stats["strength"]
@@ -83,6 +115,8 @@ def combat(location):
                 enemy_damage = enemy["strength"]
                 player_stats["health"] -= enemy_damage
                 print(f"The enemy attacks and deals {enemy_damage} damage to you.")
+        elif action == "use inventory":
+            access_inventory()
         elif action == "run":
             print("You escaped the fight!")
             return
@@ -151,11 +185,12 @@ def main():
     while game_active:
         display_stats()
         explore_location(current_location)
-        current_location = move_to_location(current_location)
-        # Win condition (e.g., all enemies defeated or mystery solved)
+        # Win condition
         if not enemies and "Special Weapon" in inventory:
-            print("Congratulations! You have uncovered the mystery and won the game!")
+            print("Congratulations! You have defeated all enemies and obtained the Special Weapon.")
+            print("You uncovered the mystery of the arena and won the game!")
             break
+        current_location = move_to_location(current_location)
 
 # Run the game
 if __name__ == "__main__":
